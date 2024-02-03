@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Poke from '../components/Poke.astro';
+
+let offset = Astro.url.searchParams.get("offset") || 0;
+offset = parseInt(offset);
+let llista = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
+llista = await llista.json();
+llista = llista.results;
+const prev = `?offset=${offset == 0 ? 0 : offset - 20}`;
+const next = `?offset=${offset + 20}`;
+const promises = await llista.map(async (poke) => {
+	let item = await fetch(poke.url);
+	item = await item.json();
+	return {
+	name: poke.name,
+	img: item.sprites.other["official-artwork"].front_default,
+	};
+});
+const pokemons = await Promise.all(promises);
+---
+
+<Layout title="PokeAPI - Adrian">
+<header class="text-center text-4xl pt-5 font-semibold text-yellow-300 border-blue-500">POKEMON</header>
+	<div class="grid cols-5 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 p-5">
+		{
+			pokemons.map(x => <Poke name={x.name} img={x.img} inside={false}></Poke>)
+		}
+	</div>
+	<nav class="flex justify-between text-center italic text-lg uppercase m-5">
+		<a href={prev} class="p-2 rounded-lg bg-violet-300 border-violet-300 border-2 hover:border-violet-400 hover:bg-violet-400">Back</a>
+		<a href={next} class="p-2 rounded-lg bg-violet-300 border-violet-300 border-2 hover:border-violet-400 hover:bg-violet-400">Next</a>
+	</nav>
+</Layout>

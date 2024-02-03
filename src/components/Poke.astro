@@ -1,0 +1,11 @@
+--- 
+const {name, img, inside} = Astro.props;
+---
+
+<a class="bg-violet-100 border-violet-100 border-2 hover:border-violet-200 hover:bg-violet-200 rounded-lg" 
+	href= {
+	 inside ? `/` : `/pokemon/${name}`
+	}>
+	<img class="object-fit" src={img}></img>
+	<h2 class="text-center p-3 italic text-lg uppercase">{name}</h2>
+</a>

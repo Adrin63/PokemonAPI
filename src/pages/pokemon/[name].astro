@@ -1,0 +1,15 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Poke from '../../components/Poke.astro';
+const { name } = Astro.params;
+
+const pkm = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+    .then(x => x.json())
+    .then(x => x)
+    .catch((err) => {console.error(err)})
+---
+<Layout title={pkm.name}>
+	<div class="flex content-center">
+        <Poke name={pkm.name} img={pkm.sprites.other["official-artwork"].front_default} inside={true}></Poke>
+    </div>
+</Layout>
